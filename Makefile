@@ -4,19 +4,20 @@
 #	(c) Fontys 2016 Jeffrey Kain & Mehmet Bakirci
 #
 
-BINARIES = Main
-SOURCES =
+BINARIES = Read_shm
+READ_OBJS =
 
 #CC = i586-linux-g++
 CC = g++
-CFLAGS = -o
+CFLAGS =  -lrt
+LDLIBS =
 
 all:	$(BINARIES)
 
 clean:
 	rm *.o $(BINARIES)
 
-TCPChatClient: TCPChatClient.o $(CLIENT_AUX_OBJS)
+Read_shm: Read_shm.o $(READ_OBJS) $(CFLAGS)
 
 
 
