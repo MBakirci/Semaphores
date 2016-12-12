@@ -9,7 +9,7 @@ READ_OBJS =
 
 #CC = i586-linux-g++
 CC = g++
-CFLAGS =  -lrt
+CFLAGS =  -lrt -lpthread
 LDLIBS =
 
 all:	$(BINARIES)

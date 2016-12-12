@@ -1,8 +1,7 @@
 //
 // Created by student on 12-12-16.
 //
-
-#include <semaphore.h>
+#include "semaphore.h"
 #include "stddef.h"
 #include "stdio.h"
 #include <unistd.h>
@@ -18,14 +17,29 @@ struct cijfer_t {
 };
 
 int main () {
-    int sem_fd;
+    sem_t* sem_fd;
     void *vaddr;
+    int shm_fd = 0;
 
-    sem_fd = shm_open("my_shm",O_RDONLY, 0666);
-    vaddr = mmap(0,SIZE,PROT_READ, MAP_SHARED, sem_fd,0);
+    sem_fd = sem_open("my_shm",O_CREAT,S_IRUSR, 100);
+    if(sem_fd == SEM_FAILED)
+    {
+        printf("Failed to open shared memory object");
+    }
+    // get shared memory handle
+    if ((shm_fd = shm_open("my_shm", O_CREAT | O_RDWR, 0666)) == -1){
+        perror("cannot open");
+        return -1;
+    }
+    /* lock the shared memory */
+    if (mlock(vaddr, SIZE) != 0){
+        perror("cannot mlock");
+        return -1;
+    }
+    vaddr = mmap(0,SIZE,PROT_READ, MAP_SHARED, shm_fd,0);
     struct cijfer_t* ct;
     ct = (struct cijfer_t*)vaddr;
     printf("%d,%s\n",ct->waarde,ct->uitspraak);
-    shm_unlink("my_shm");
+    sem_unlink("my_shm");
     return 0;
 }
