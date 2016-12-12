@@ -4,8 +4,8 @@
 #	(c) Fontys 2016 Jeffrey Kain & Mehmet Bakirci
 #
 
-BINARIES Main
-SOURCES
+BINARIES = Main
+SOURCES =
 
 #CC = i586-linux-g++
 CC = g++
