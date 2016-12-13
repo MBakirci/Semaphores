@@ -1,61 +1,64 @@
-#include <iostream>
-#include <semaphore.h>
-#include <pthread.h>
-#include <fcntl.h>
+//
+// Created by student on 12-12-16.
+//
+//#include "semaphore.h"
+#include "stddef.h"
+#include "stdio.h"
 #include <unistd.h>
-#include <sys/stat.h> /* For mode constants */
+#include <sys/types.h>
 #include <sys/mman.h>
-
-struct cijfer_t {
-  int waarde;
-  char *uitspraak;
-};
+#include <fcntl.h>
 
 const int SIZE = 1024;
-const char SHM_NAME[] = "/my_shm";
-struct cijfer_t cijfertjes[10] = {
-    {0, (char *)"zero"},  {1, (char *)"one"},   {2, (char *)"two"},
-    {3, (char *)"three"}, {4, (char *)"four"},  {5, (char *)"five"},
-    {6, (char *)"six"},   {7, (char *)"seven"}, {8, (char *)"eight"},
-    {9, (char *)"nine"},
+
+struct cijfer_t {
+    int waarde;
+    char *uitspraak;
 };
-int main() {
-  int shm_fd = 0;
-  void *vaddr = NULL;
 
-  shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 0666);
-  if (shm_fd == -1) {
-    std::cout << "failed to open shm" << std::endl;
-    sem_unlink(SHM_NAME);
-    return 1;
-  }
-  std::cout << "opend\n";
-  if (ftruncate(shm_fd, SIZE) != 0) {
-    std::cout << "Failed to resize the shared memory object\n";
-    return 1;
-  }
-  std::cout << "resized\n";
-  vaddr = mmap(NULL, SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
-  if (vaddr == MAP_FAILED) {
-    std::cout << "Failed to mmap() the shared memory object\n";
-    return 1;
-  }
-  std::cout << "mapped\n";
-  // mlock(vaddr, SIZE);
-
-  // shm_unlink(SHM_NAME);
-  sem_init((sem_t *)vaddr, 1, 1);
-  std::cout << "init\n";
-  /*** Shared memory is ready for use ***/
-  for (int i = 0; i < 10; i++) {
-    if (sem_wait((sem_t *)vaddr) == 0) {
-      vaddr += cijfertjes[i].waarde;
-      sem_post((sem_t *)vaddr);
+int main () {
+    void *vaddr;
+    int shm_fd =0;
+    /* get shared memory handle */
+    if ((shm_fd = shm_open("my_shm", O_CREAT | O_RDWR, 0666)) == -1){
+        perror("cannot open");
+        return -1;
     }
-  }
-  munmap(vaddr, SIZE);
-  close(shm_fd);
-  shm_unlink(SHM_NAME);
+    printf("opened\n");
 
-  return 0;
+    /* set the shared memory size to SHM_SIZE */
+    if (ftruncate(shm_fd, SIZE) != 0){
+        perror("cannot set size");
+        return -1;
+    }
+    printf("truncated\n");
+
+    /* Map shared memory in address space. MAP_SHARED flag tells that this is a
+    * shared mapping */
+    if ((vaddr = mmap(0, SIZE, PROT_WRITE, MAP_SHARED, shm_fd, 0)) == MAP_FAILED){
+        perror("cannot mmap");
+        return -1;
+    }
+    printf("mapped\n");
+
+
+    /* lock the shared memory */
+    if (mlock(vaddr, SIZE) != 0){
+        perror("cannot mlock");
+        return -1;
+    }
+
+
+    struct cijfer_t*ct =(struct cijfer_t*)vaddr;
+    ct->waarde=1;
+    ct->uitspraak= "one";
+
+    /* unmap from address space */
+    munmap(vaddr, SIZE);
+    printf("unmapped\n");
+    close(shm_fd);
+    printf("closed\n");
+
+    return 0;
+>>>>>>> c2e5d126cf047629300f7dd018f481d25ae46a3e
 }
