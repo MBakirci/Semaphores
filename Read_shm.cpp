@@ -19,6 +19,7 @@ struct cijfer_t {
 int main () {
     void *vaddr;
     int shm_fd =0;
+    cijfer_t *ct;
     for(;;) {
         /* get shared memory handle */
         if ((shm_fd = shm_open("my_shm", O_CREAT | O_RDWR, 0666)) == -1) {
@@ -47,9 +48,9 @@ int main () {
             return -1;
         }
 
-        cijfer_t *ct = (struct cijfer_t *) vaddr;
-        printf("waarde=%d", ct->waarde);
-        printf(" uitspraak=%s\n",ct->uitspraak);
+            ct = (struct cijfer_t *) vaddr;
+            printf("waarde=%d", ct->waarde);
+            printf(" uitspraak=%s\n", ct->uitspraak);
 
 
 

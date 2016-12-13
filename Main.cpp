@@ -1,7 +1,7 @@
 //
 // Created by student on 12-12-16.
 //
-//#include "semaphore.h"
+#include "semaphore.h"
 #include "stddef.h"
 #include "stdio.h"
 #include <unistd.h>
@@ -20,6 +20,7 @@ struct cijfer_t {
 int main () {
     void *vaddr;
     int shm_fd =0;
+    sem_t sem;
     cijfer_t ctarray[] ={{0,"Zero"},{1,"One"},{2,"Two"},{3,"Three"},{4,"Four"},{5,"Five"},{6,"Six"}
             ,{7,"Seven"},{8,"Eight"},{9,"Nine"}};
 
@@ -49,14 +50,12 @@ int main () {
                 perror("cannot mlock");
                 return -1;
             }
-
-            struct cijfer_t *ct = (struct cijfer_t *) vaddr;
-            ct->waarde= ctarray[i].waarde;
-            strcpy(ct->uitspraak, ctarray[i].uitspraak);
-            printf("waarde: %i", ct->waarde);
-            printf(" uitspraak: %s\n", ct->uitspraak);
-
-
+            struct cijfer_t *ct;
+                ct = (struct cijfer_t *) vaddr;
+                ct->waarde = ctarray[i].waarde;
+                strcpy(ct->uitspraak, ctarray[i].uitspraak);
+                printf("waarde: %i", ct->waarde);
+                printf(" uitspraak: %s\n", ct->uitspraak);
 
 
 
