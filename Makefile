@@ -4,8 +4,8 @@
 #	(c) Fontys 2016 Jeffrey Kain & Mehmet Bakirci
 #
 
-BINARIES = Read_shm
-READ_OBJS =
+BINARIES = Read_shm Main
+OBJECTS =
 
 #CC = i586-linux-g++
 CC = g++
@@ -17,7 +17,9 @@ all:	$(BINARIES)
 clean:
 	rm *.o $(BINARIES)
 
-Read_shm: Read_shm.o $(READ_OBJS) $(CFLAGS)
+Read_shm: Read_shm.o $(OBJECTS) $(CFLAGS)
+
+Main: Main.o $(OBJECTS) $(CFLAGS)
 
 
 
