@@ -19,7 +19,7 @@ struct cijfer_t {
 int main () {
     void *vaddr;
     int shm_fd =0;
-
+    for(;;) {
         /* get shared memory handle */
         if ((shm_fd = shm_open("my_shm", O_CREAT | O_RDWR, 0666)) == -1) {
             perror("cannot open");
@@ -27,12 +27,12 @@ int main () {
         }
         printf("opened\n");
 
-//    /* set the shared memory size to SHM_SIZE */
-//    if (ftruncate(shm_fd, SIZE) != 0){
-//        perror("cannot set size");
-//        return -1;
-//    }
-//    printf("truncated\n");
+    /* set the shared memory size to SHM_SIZE */
+    if (ftruncate(shm_fd, SIZE) != 0){
+        perror("cannot set size");
+        return -1;
+    }
+    printf("truncated\n");
 
         /* Map shared memory in address space. MAP_SHARED flag tells that this is a
         * shared mapping */
@@ -48,10 +48,9 @@ int main () {
         }
         printf("locked\n");
 
-        for(;;) {
-            cijfer_t *ct = (struct cijfer_t *) vaddr;
-            printf("waarde=%d", ct->waarde);
-        }
+        cijfer_t *ct = (struct cijfer_t *) vaddr;
+        printf("waarde=%d\n", ct->waarde);
+
 
 
 
@@ -60,6 +59,7 @@ int main () {
         printf("unmapped\n");
         close(shm_fd);
         printf("closed\n");
+    }
 
         return 0;
     }
