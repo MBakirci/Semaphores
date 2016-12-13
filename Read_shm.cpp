@@ -13,7 +13,7 @@ const int SIZE = 1024;
 
 struct cijfer_t {
     int waarde;
-    char *uitspraak;
+    char uitspraak[10];
 };
 
 int main () {
@@ -25,14 +25,14 @@ int main () {
             perror("cannot open");
             return -1;
         }
-        printf("opened\n");
+
 
     /* set the shared memory size to SHM_SIZE */
     if (ftruncate(shm_fd, SIZE) != 0){
         perror("cannot set size");
         return -1;
     }
-    printf("truncated\n");
+
 
         /* Map shared memory in address space. MAP_SHARED flag tells that this is a
         * shared mapping */
@@ -40,25 +40,25 @@ int main () {
             perror("cannot mmap");
             return -1;
         }
-        printf("mapped\n");
+
 
         if (mlock(vaddr, SIZE) != 0) {
             perror("cannot mlock");
             return -1;
         }
-        printf("locked\n");
 
         cijfer_t *ct = (struct cijfer_t *) vaddr;
-        printf("waarde=%d\n", ct->waarde);
+        printf("waarde=%d", ct->waarde);
+        printf(" uitspraak=%s\n",ct->uitspraak);
 
 
 
 
         /* unmap from address space */
         munmap(vaddr, SIZE);
-        printf("unmapped\n");
+
         close(shm_fd);
-        printf("closed\n");
+
     }
 
         return 0;
