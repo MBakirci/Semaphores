@@ -54,7 +54,7 @@ int main()
                 strcpy(ct.uitspraak, ctarray[i].uitspraak);
                 printf("waarde=%d", ct.waarde);
                 printf(" uitspraak=%s\n", ct.uitspraak);
-                if (mq_send(ds, (const char *) &ct, sizeof(ct) + 1, 0) == -1) {
+                if (mq_send(ds, (const char *) &ct, sizeof(ct), 0) == -1) {
                     perror("Sending message error");
                     return -1;
                 }

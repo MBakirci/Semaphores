@@ -20,12 +20,15 @@ struct cijfer_t {
 int main () {
     void *vaddr;
     int shm_fd =0;
-    sem_t sem;
+    sem_t m;
+    sem_init(&m,0,1);
     cijfer_t ctarray[] ={{0,"Zero"},{1,"One"},{2,"Two"},{3,"Three"},{4,"Four"},{5,"Five"},{6,"Six"}
             ,{7,"Seven"},{8,"Eight"},{9,"Nine"}};
 
     for(;;) {
+        
         for (int i = 0; i < 10; i++) {
+            
             /* get shared memory handle */
             if ((shm_fd = shm_open("my_shm", O_CREAT | O_RDWR, 0666)) == -1) {
                 perror("cannot open");
@@ -50,18 +53,23 @@ int main () {
                 perror("cannot mlock");
                 return -1;
             }
-            struct cijfer_t *ct;
+              sem_wait(&m);
+                struct cijfer_t *ct;
+             
                 ct = (struct cijfer_t *) vaddr;
                 ct->waarde = ctarray[i].waarde;
                 strcpy(ct->uitspraak, ctarray[i].uitspraak);
                 printf("waarde: %i", ct->waarde);
                 printf(" uitspraak: %s\n", ct->uitspraak);
-
-
+              
+               
 
             /* unmap from address space */
             munmap(vaddr, SIZE);
             close(shm_fd);
+            sem_post(&m);
+        
+        
         }
     }
 
