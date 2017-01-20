@@ -19,7 +19,7 @@ clean:
 
 Read_shm: Read_shm.o $(READ_OBJS) $(CFLAGS)
 Write_shm: Write_shm.o $(READ_OBJS) $(CFLAGS)
-Read_Queue: Read_queue.o $(READ_OBJS) $(CFLAGS)
+Read_queue: Read_queue.o $(READ_OBJS) $(CFLAGS)
 Write_queue: Write_queue.o $(READ_OBJS) $(CFLAGS)
 
 
