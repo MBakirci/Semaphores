@@ -4,13 +4,15 @@
 #	(c) Fontys 2016 Jeffrey Kain & Mehmet Bakirci
 #
 
-BINARIES = Read_shm Write_shm Read_queue Write_queue
+BINARIES = Read_shm Write_shm Read_queue Write_queue Write_shm_prod_cons
 READ_OBJS =
 
 #CC = i586-linux-g++
-CC = g++
+CC = gcc
 CFLAGS =  -lrt -lpthread
 LDLIBS =
+SRCS = $(wildcard ./*.c)
+OBJS = $(subst .c,.o,$(SRCS))
 
 all:	$(BINARIES)
 
@@ -22,6 +24,8 @@ Write_shm: Write_shm.o $(READ_OBJS) $(CFLAGS)
 Read_queue: Read_queue.o $(READ_OBJS) $(CFLAGS)
 Write_queue: Write_queue.o $(READ_OBJS) $(CFLAGS)
 
+producer-consumer: $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) -o $@
 
 
 
