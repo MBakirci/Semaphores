@@ -1,7 +1,6 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include </usr/include/semaphore.h>
 #include <unistd.h>
 #include "semaphore.h"
 #include "stddef.h"
